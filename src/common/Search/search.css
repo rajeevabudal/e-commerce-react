@@ -1,0 +1,11 @@
+.search-ecommerce{
+    background-color: white;
+    /* opacity: 0.3; */
+    width: 30%;
+    border-radius: 12px !important;
+    border: 0 !important;
+    /* margin-right: 120px !important; */
+    position: relative;
+    right: 320px!important;
+    color: white
+}
