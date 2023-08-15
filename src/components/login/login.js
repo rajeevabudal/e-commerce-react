@@ -83,7 +83,8 @@ export default function SignIn() {
       .then((res) => {
         console.log(res.data);
         let data = res.data;
-        console.log(data);
+        localStorage.setItem("token", data.token)
+        console.log(data.token);
         dispatch(loginGetData(res.data));
         navigate("/products");
         dispatch(isLoginData(true));

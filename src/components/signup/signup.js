@@ -141,6 +141,7 @@ export default function SignUp() {
       setState({ ...state, signupGetData: signupData, isValid: true });
     }
   };
+  
   const displayErrorMessage = () => {
     return (
       <Snackbar
@@ -172,7 +173,6 @@ export default function SignUp() {
       </Snackbar>
     );
   };
-
   return (
     <>
       <ThemeProvider theme={defaultTheme}>
