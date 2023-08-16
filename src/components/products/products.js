@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ProductForm from "./productsform";
 import Card from "../../common/Card/card";
-
+import "./products.css";
 const ProductsPage = () => {
   const navigate = useNavigate();
   const isAddProduct = useSelector((state) => state.product.isAddProduct);
@@ -32,11 +32,13 @@ const ProductsPage = () => {
       headers
     );
 
-    getCategory.then((res)=>{
-        console.log(res.data)
-    }).catch((err)=>{
+    getCategory
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
         console.log(err);
-    })
+      });
   }, [isAddProduct]);
 
   console.log(productData);
@@ -48,13 +50,19 @@ const ProductsPage = () => {
   function displayProduct() {
     return (
       <>
-        {productData.map((product) => {
-          return (
-            <>
-              <Card imageUrl = {product.imageUrl} title={product.name} description={product.description}/>
-            </>
-          );
-        })}
+        <div className="ecommerce-card">
+          {productData.map((product) => {
+            return (
+              <div>
+                <Card
+                  imageUrl={product.imageUrl}
+                  title={product.name}
+                  description={product.description}
+                />
+              </div>
+            );
+          })}
+        </div>
       </>
     );
   }
