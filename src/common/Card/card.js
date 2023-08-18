@@ -28,7 +28,7 @@ export default function ImgMediaCard({ imageUrl, title, description }) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">BUY</Button>
+        <Button size="small" variant="contained">BUY</Button>
         {loginData.role[0].authority === "ADMIN" && 
           <>
             <Button size="small">

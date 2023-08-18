@@ -1,3 +1,12 @@
 .ecommerce-card{
     display: flex;
+    flex-direction: row;
+    padding-left: 120px;
+    padding-top: 50px;
+}
+
+.card-overview{
+    display: flex;
+    flex-direction: row;
+    padding: 20px;
 }
