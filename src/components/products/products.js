@@ -60,7 +60,7 @@ const ProductsPage = () => {
   function displayProduct() {
     return (
       <>
-        <Grid
+        {/* <Grid
           container
           rowSpacing={1}
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
@@ -81,7 +81,7 @@ const ProductsPage = () => {
               </>
             );
           })}
-        </Grid>
+        </Grid> */}
         <Grid
           container
           rowSpacing={1}

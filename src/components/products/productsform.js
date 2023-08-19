@@ -43,11 +43,15 @@ export default function ProductForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const token = localStorage.getItem("token")
-    console.log(token)
-    const headers = {
-      Authorization: token
-    };
+    const token = localStorage.getItem("token");
+    console.log(token);
+    let axiosConfig = {
+        headers : {
+            'Content-Type' : 'application/json',
+  'Accept' : 'application/json',
+            Authorization: `Bearer ${token}`,
+          }
+    }
     let productSubmitData = {
       name: data.get("Name"),
       category: data.get("category"),
@@ -58,11 +62,8 @@ export default function ProductForm() {
       imageUrl: data.get("ImageURL"),
     };
     console.log(productSubmitData);
-    let result = axios.post("http://localhost:8080/api/products", {
-      headers,
-      productSubmitData,
-    });
-    result
+    axios
+      .post("http://localhost:8080/api/products", productSubmitData, axiosConfig)
       .then((res) => {
         console.log(res);
       })
