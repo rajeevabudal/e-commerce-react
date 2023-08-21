@@ -1,0 +1,23 @@
+.card-title-price{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding-right: 9px;
+}
+
+.card-edit-delete{
+    display: flex;
+    flex-direction: row;
+    padding-left: 120px;
+}
+
+.card-description{
+    display: flex;
+    height: 100px;
+    overflow: hidden;
+}
+
+.card-content{
+    display: flex;
+    flex-direction: column;
+}

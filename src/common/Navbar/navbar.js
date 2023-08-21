@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { isLoginData } from "../../redux/loginSlice";
-import { productAddtion } from "../../redux/productSlice";
+import { productAddtion, productEdit } from "../../redux/productSlice";
 import SearchBar from "../Search/search";
 import "./navbar.css";
 const NavigationBar = ({ navItems, heading }) => {
@@ -19,9 +19,11 @@ const NavigationBar = ({ navItems, heading }) => {
     } else if (item === "Add Product") {
       navigate("/products");
       dispatch(productAddtion(true));
+      dispatch(productEdit(false))
     } else if (item === "Home") {
       navigate("/products");
       dispatch(productAddtion(false));
+      dispatch(productEdit(false))
     } else {
       navigate(`/${item}`);
     }

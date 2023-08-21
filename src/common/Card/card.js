@@ -8,9 +8,17 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
 import { useSelector } from "react-redux";
-export default function ImgMediaCard({ imageUrl, title, description }) {
+import "./card.css";
+export default function ImgMediaCard({
+  imageUrl,
+  title,
+  description,
+  handleEdit,
+  handleDelete,
+  price,
+}) {
   const loginData = useSelector((state) => state.login.signInData);
-  console.log(loginData)
+  console.log(loginData);
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
@@ -19,26 +27,37 @@ export default function ImgMediaCard({ imageUrl, title, description }) {
         height="140"
         image={imageUrl}
       />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          {title}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {description}
-        </Typography>
+      <CardContent className="card-content">
+        <div className="card-title-price">
+          <Typography gutterBottom variant="h5" component="div">
+            {title}
+          </Typography>
+          <Typography gutterBottom variant="h5" component="div">
+            Rs : {price}
+          </Typography>
+        </div>
+        <div className="card-description">
+          <Typography variant="body2" color="text.secondary">
+            {description}
+          </Typography>
+        </div>
       </CardContent>
       <CardActions>
-        <Button size="small" variant="contained">BUY</Button>
-        {loginData.role[0].authority === "ADMIN" && 
-          <>
-            <Button size="small">
-              <EditIcon />
-            </Button>
-            <Button size="small">
-              <DeleteIcon />
-            </Button>
-          </>
-        }
+        <Button size="small" variant="contained">
+          BUY
+        </Button>
+        <div className="card-edit-delete">
+          {loginData.role[0].authority === "ADMIN" && (
+            <>
+              <Button size="small">
+                <EditIcon onClick={handleEdit} />
+              </Button>
+              <Button size="small">
+                <DeleteIcon onClick={handleDelete} />
+              </Button>
+            </>
+          )}
+        </div>
       </CardActions>
     </Card>
   );
