@@ -17,61 +17,48 @@ const defaultTheme = createTheme();
 export default function ProductForm({ product }) {
   const isEditProduct = useSelector((state) => state.product.isEditProduct);
   const categoryList = useSelector((state) => state.product.categoryList);
+  const isAddProduct = useSelector((state) => state.product.isAddProduct);
   const createOption = (label) => ({
     label,
     value: label.toLowerCase().replace(/\W/g, ""),
   });
-  const isAddProduct = useSelector((state) => state.product.isAddProduct);
-//   const defaultOptions = [createOption("Furniture")];
+  const [name, setName] = React.useState("");
+  const [manufacturer, setManufacturer] = React.useState("");
+  const [price, setPrice] = React.useState(0);
+  const [availableItems, setAvailableItems] = React.useState(0);
+  const [description, setDescription] = React.useState("");
+  const [imageUrl, setImageUrl] = React.useState("");
   const [state, setState] = React.useState({
     isLoading: false,
     value: "",
     options: [],
-    name: "",
-    manufacturer: "",
-    price: 0,
-    availableItems: 0,
-    description: "",
-    imageUrl: "",
   });
 
-  const {
-    isLoading,
-    value,
-    options,
-    name,
-    manufacturer,
-    price,
-    availableItems,
-    description,
-    imageUrl,
-  } = state;
+  const { isLoading, value, options } = state;
 
   React.useEffect(() => {
-    setState({
-      ...state,
-      name: product.name,
-      manufacturer: product.manufacturer,
-      price: product.price,
-      availableItems: product.availableItems,
-      description: product.description,
-      imageUrl: product.imageUrl,
+    console.log(product.name, isAddProduct);
+    if (isAddProduct) {
+      setName("");
+      setManufacturer("");
+      setPrice(0);
+      setAvailableItems(0);
+      setDescription("");
+      setImageUrl("");
+    } else {
+      setName(product.name);
+      setManufacturer(product.manufacturer);
+      setPrice(product.price);
+      setAvailableItems(product.availableItems);
+      setDescription(product.description);
+      setImageUrl(product.imageUrl);
+    }
+    let categories = categoryList.map((cat) => {
+      return createOption(cat);
     });
-    isAddProduct &&
-      setState({
-        ...state,
-        name: "",
-        manufacturer: "",
-        price: 0,
-        availableItems: 0,
-        description: "",
-        imageUrl: "",
-      });
-      let categories = categoryList.map((cat)=>{
-       return createOption(cat);
-      })
-      setState({...state, options: categories})
+    setState({ ...state, options: categories });
   }, [isEditProduct, isAddProduct]);
+
   const handleCreate = (inputValue) => {
     setState({ ...state, isLoading: true });
     setTimeout(() => {
@@ -134,9 +121,32 @@ export default function ProductForm({ product }) {
   };
 
   const handleChange = (formValue, event) => {
-    setState({ ...state, [`${formValue}`]: event.target.value });
+    // setState({ ...state, [`${formValue}`]: event.target.value });
+    console.log(formValue, event.target.value)
+    switch(formValue){
+        case "name":
+            setName(event.target.value);
+            break;
+        case "manufacturer":
+            setManufacturer(event.target.value);
+            break;
+        case "availableItems":
+            setAvailableItems(event.target.value);
+            break;
+        case "description":
+            setDescription(event.target.value);
+            break;
+        case "imageUrl":
+            setImageUrl(event.target.value);
+            break;
+        case "price":
+            setPrice(event.target.value);
+            break;
+    }
+    // if("name")
   };
 
+  console.log(name, isAddProduct, product.name);
   return (
     <>
       <ThemeProvider theme={defaultTheme}>

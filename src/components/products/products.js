@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import CircularProgress from '@mui/material/CircularProgress';
 import ProductForm from "./productsform";
 import Card from "../../common/Card/card";
 import Grid from "@mui/material/Grid";
@@ -19,13 +20,14 @@ const ProductsPage = () => {
   const isAddProduct = useSelector((state) => state.product.isAddProduct);
   const isEditProduct = useSelector((state) => state.product.isEditProduct);
   const [state, setState] = React.useState({
-    productData: [],
+    // productData: [],
     alignment: "web",
     categories: [],
     product: {},
     isDelete: false,
   });
-  const { productData, alignment, categories, product, isDelete } = state;
+  const { alignment, categories, product, isDelete } = state;
+  const [productData, setProdData] = React.useState([]);
   React.useEffect(() => {
     const token = localStorage.getItem("token");
     const headers = {
@@ -35,7 +37,8 @@ const ProductsPage = () => {
     result
       .then((res) => {
         console.log(res.data);
-        setState({ ...state, productData: res.data });
+        // setState({ ...state, productData: res.data });
+        setProdData(res.data)
       })
       .catch((err) => {
         console.log(err);
@@ -58,6 +61,7 @@ const ProductsPage = () => {
   }, [isAddProduct]);
 
   function displayProductForm() {
+    console.log(product)
     return <ProductForm product={product} />;
   }
 
@@ -74,6 +78,10 @@ const ProductsPage = () => {
     setState({ ...state, isDelete: true, product: product });
     dispatch(productDelete(true));
   };
+
+  const handleBuy=(product)=>{
+    navigate(`/products/${product.id}`)
+  }
   function displayProduct() {
     return (
       <>
@@ -105,7 +113,7 @@ const ProductsPage = () => {
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           className="ecommerce-card"
         >
-          {productData.length > 0 &&
+          {productData.length > 0 ?
             productData.map((product) => {
               return (
                 <Grid item xs={2} sm={4} md={4} className="card-overview">
@@ -116,10 +124,11 @@ const ProductsPage = () => {
                     handleEdit={() => handleEdit(product)}
                     handleDelete={() => handleDelete(product)}
                     price={product.price}
+                    handleBuy={()=>handleBuy(product)}
                   />
                 </Grid>
               );
-            })}
+            }): <CircularProgress />}
         </Grid>
       </>
     );

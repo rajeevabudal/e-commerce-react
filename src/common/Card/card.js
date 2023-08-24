@@ -16,11 +16,12 @@ export default function ImgMediaCard({
   handleEdit,
   handleDelete,
   price,
+  handleBuy,
 }) {
   const loginData = useSelector((state) => state.login.signInData);
   console.log(loginData);
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 345 }} className="card-overview">
       <CardMedia
         component="img"
         alt="green iguana"
@@ -43,7 +44,7 @@ export default function ImgMediaCard({
         </div>
       </CardContent>
       <CardActions>
-        <Button size="small" variant="contained">
+        <Button size="small" variant="contained" onClick={handleBuy}>
           BUY
         </Button>
         <div className="card-edit-delete">
