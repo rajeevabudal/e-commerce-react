@@ -7,6 +7,8 @@ import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import { useParams } from "react-router-dom";
+import "./products.css";
+import SelectAddress from "../address/address";
 export default function ProductDetails() {
   const { id } = useParams();
   const Item = styled(Paper)(({ theme }) => ({
@@ -19,9 +21,10 @@ export default function ProductDetails() {
 
   const [state, setState] = React.useState({
     productDetails: {},
+    placeOrder: false,
   });
 
-  const { productDetails } = state;
+  const { productDetails, placeOrder } = state;
   React.useEffect(() => {
     axios
       .get(`http://localhost:8080/api/products/${id}`)
@@ -34,46 +37,65 @@ export default function ProductDetails() {
       });
   }, []);
 
-  console.log(productDetails);
+  const handlePlaceOrder = () => {
+    console.log("Clicked");
+    // return (
+    //   <>
+    //     <SelectAddress />
+    //   </>
+    // );
+    setState({ ...state, placeOrder: true });
+  };
+  console.log(placeOrder);
   return (
     <>
-      <div>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <div>
-              <img
-                src={productDetails.imageUrl}
-                style={{ height: "100%", width: "100%" }}
-              />
-            </div>
-          </Grid>
-          <Grid item xs={8}>
-            <div>
-              <h1>{productDetails.name}</h1>
-              <p>
-                Category: <b>{productDetails.name}</b>
-              </p>
-              <p>{productDetails.description}</p>
-              <p style={{ color: "red" }}>&#8377;{productDetails.price}</p>
-              <TextField
-                autoComplete="given-name"
-                name="Quantity"
-                required
-                fullWidth
-                id="Quantity"
-                label="Enter Quantity"
-                // onChange={(e) => handleChange("name", e)}
-                // value={name}
-                autoFocus
-                style={{ width: "20%" }}
-              />
+      {placeOrder ? (
+        <SelectAddress />
+      ) : (
+        <div>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
               <div>
-                <Button variant="contained">Place Order</Button>
+                <img
+                  src={productDetails.imageUrl}
+                  style={{ height: "100%", width: "100%" }}
+                />
               </div>
-            </div>
+            </Grid>
+            <Grid item xs={8}>
+              <div>
+                <h1>{productDetails.name}</h1>
+                <p>
+                  Category: <b>{productDetails.name}</b>
+                </p>
+                <p>{productDetails.description}</p>
+                <p style={{ color: "red" }}>&#8377;{productDetails.price}</p>
+                <TextField
+                  autoComplete="given-name"
+                  name="Quantity"
+                  required
+                  fullWidth
+                  id="Quantity"
+                  label="Enter Quantity"
+                  // onChange={(e) => handleChange("name", e)}
+                  // value={name}
+                  autoFocus
+                  style={{ width: "20%" }}
+                />
+                <div>
+                  <Button
+                    variant="contained"
+                    className="place-order"
+                    onClick={handlePlaceOrder}
+                  >
+                    Place Order
+                  </Button>
+                </div>
+              </div>
+            </Grid>
           </Grid>
-        </Grid>
-      </div>
+        </div>
+      )}
     </>
   );
 }

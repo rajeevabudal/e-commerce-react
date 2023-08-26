@@ -7,6 +7,7 @@ import SignUp from "../signup/signup";
 import Products from "../products/products"
 import ProductDetails from "../products/productdetails";
 import Protected from "../../protected";
+import ProductForm from "../products/productsform";
 const Home = () => {
   let isLogin = useSelector((state)=>state.login.isLogin);
   let signInData = useSelector((state)=>state.login.signInData);
@@ -19,8 +20,11 @@ const Home = () => {
       <Routes>
           <Route path="/login" element={<LoginForm/>} />
           <Route path="/signup" element={<SignUp/>} />
-          <Route path="/products" element={<Protected isLoggedIn={isLogin}><Products/></Protected>}/>
+          <Route exact path="/products/list" element={<Protected isLoggedIn={isLogin}><Products/></Protected>}/>
           <Route path="/products/:id"element={<Protected isLoggedIn={isLogin}><ProductDetails/></Protected>}/>
+          <Route exact path="/products/edit/:id"element={<Protected isLoggedIn={isLogin}><ProductForm/></Protected>}/>
+          <Route exact path="/products/add/"element={<Protected isLoggedIn={isLogin}><ProductForm/></Protected>}/>
+
       </Routes>
     </>
   );

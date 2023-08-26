@@ -6,6 +6,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import ProductForm from "./productsform";
 import Card from "../../common/Card/card";
 import Grid from "@mui/material/Grid";
+import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import {
   productAddtion,
   productEdit,
@@ -72,6 +73,7 @@ const ProductsPage = () => {
   const handleEdit = (product) => {
     setState({ ...state, product: product });
     dispatch(productEdit(true));
+    navigate(`/products/edit/${product.id}`)
   };
 
   const handleDelete = (product) => {
@@ -85,7 +87,7 @@ const ProductsPage = () => {
   function displayProduct() {
     return (
       <>
-        {/* <Grid
+        <Grid
           container
           rowSpacing={1}
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
@@ -93,7 +95,7 @@ const ProductsPage = () => {
         >
           {categories.map((cat) => {
             return (
-              <>
+              <div className="toggle-group">
                 <ToggleButtonGroup
                   color="primary"
                   value={alignment}
@@ -103,10 +105,10 @@ const ProductsPage = () => {
                 >
                   <ToggleButton value="web">{cat}</ToggleButton>
                 </ToggleButtonGroup>
-              </>
+              </div>
             );
           })}
-        </Grid> */}
+        </Grid>
         <Grid
           container
           rowSpacing={1}

@@ -86,7 +86,7 @@ export default function SignIn() {
         localStorage.setItem("token", data.token)
         console.log(data.token);
         dispatch(loginGetData(res.data));
-        navigate("/products");
+        navigate("/products/list");
         dispatch(isLoginData(true));
       })
       .catch((err) => {

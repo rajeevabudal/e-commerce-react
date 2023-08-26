@@ -16,12 +16,13 @@ const NavigationBar = ({ navItems, heading }) => {
       navigate("/login");
       dispatch(isLoginData(false));
       dispatch(productAddtion(false))
+      dispatch(productEdit(false))
     } else if (item === "Add Product") {
-      navigate("/products");
+      navigate("/products/add");
       dispatch(productAddtion(true));
       dispatch(productEdit(false))
     } else if (item === "Home") {
-      navigate("/products");
+      navigate("/products/list");
       dispatch(productAddtion(false));
       dispatch(productEdit(false))
     } else {

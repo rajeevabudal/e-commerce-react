@@ -9,12 +9,14 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
 const defaultTheme = createTheme();
 export default function ProductForm({ product }) {
+  const navigate = useNavigate();
+  const { id } = useParams();
   const isEditProduct = useSelector((state) => state.product.isEditProduct);
   const categoryList = useSelector((state) => state.product.categoryList);
   const isAddProduct = useSelector((state) => state.product.isAddProduct);
@@ -28,16 +30,16 @@ export default function ProductForm({ product }) {
   const [availableItems, setAvailableItems] = React.useState(0);
   const [description, setDescription] = React.useState("");
   const [imageUrl, setImageUrl] = React.useState("");
+  const [value, setValue] = React.useState("");
   const [state, setState] = React.useState({
     isLoading: false,
-    value: "",
-    options: [],
+    options: createOption("ALL"),
   });
 
-  const { isLoading, value, options } = state;
+  const { isLoading, options } = state;
 
   React.useEffect(() => {
-    console.log(product.name, isAddProduct);
+    // console.log(product.name, isAddProduct);
     if (isAddProduct) {
       setName("");
       setManufacturer("");
@@ -45,13 +47,24 @@ export default function ProductForm({ product }) {
       setAvailableItems(0);
       setDescription("");
       setImageUrl("");
+      setValue("");
     } else {
-      setName(product.name);
-      setManufacturer(product.manufacturer);
-      setPrice(product.price);
-      setAvailableItems(product.availableItems);
-      setDescription(product.description);
-      setImageUrl(product.imageUrl);
+        axios
+      .get(`http://localhost:8080/api/products/${id}`)
+      .then((result) => {
+        console.log(result.data);
+        setName(result.data.name);
+        setManufacturer(result.data.manufacturer);
+        setPrice(result.data.price);
+        setAvailableItems(result.data.availableItems);
+        setDescription(result.data.description);
+        setImageUrl(result.data.imageUrl);
+        setValue(result.data.category);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      
     }
     let categories = categoryList.map((cat) => {
       return createOption(cat);
@@ -67,8 +80,8 @@ export default function ProductForm({ product }) {
         ...state,
         isLoading: false,
         options: [...options, newOption],
-        value: newOption,
       });
+      setValue(newOption);
     }, 1000);
   };
 
@@ -76,7 +89,7 @@ export default function ProductForm({ product }) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const token = localStorage.getItem("token");
-    console.log(token);
+    console.log(token, id);
     let axiosConfig = {
       headers: {
         "Content-Type": "application/json",
@@ -108,7 +121,7 @@ export default function ProductForm({ product }) {
           })
       : axios
           .put(
-            `http://localhost:8080/api/products/${product.id}`,
+            `http://localhost:8080/api/products/${id}`,
             productSubmitData,
             axiosConfig
           )
@@ -118,35 +131,36 @@ export default function ProductForm({ product }) {
           .catch((err) => {
             console.log(err);
           });
+    navigate("/products/list");
   };
 
   const handleChange = (formValue, event) => {
     // setState({ ...state, [`${formValue}`]: event.target.value });
-    console.log(formValue, event.target.value)
-    switch(formValue){
-        case "name":
-            setName(event.target.value);
-            break;
-        case "manufacturer":
-            setManufacturer(event.target.value);
-            break;
-        case "availableItems":
-            setAvailableItems(event.target.value);
-            break;
-        case "description":
-            setDescription(event.target.value);
-            break;
-        case "imageUrl":
-            setImageUrl(event.target.value);
-            break;
-        case "price":
-            setPrice(event.target.value);
-            break;
+    console.log(formValue, event.target.value);
+    switch (formValue) {
+      case "name":
+        setName(event.target.value);
+        break;
+      case "manufacturer":
+        setManufacturer(event.target.value);
+        break;
+      case "availableItems":
+        setAvailableItems(event.target.value);
+        break;
+      case "description":
+        setDescription(event.target.value);
+        break;
+      case "imageUrl":
+        setImageUrl(event.target.value);
+        break;
+      case "price":
+        setPrice(event.target.value);
+        break;
     }
     // if("name")
   };
 
-  console.log(name, isAddProduct, product.name);
+  console.log(value)
   return (
     <>
       <ThemeProvider theme={defaultTheme}>
@@ -217,7 +231,7 @@ export default function ProductForm({ product }) {
                     label="Available items"
                     id="AvailableItems"
                     autoComplete="AvailableItems"
-                    onChange={(e) => handleChange("avilableItems", e)}
+                    onChange={(e) => handleChange("availableItems", e)}
                     value={availableItems}
                   />
                 </Grid>
