@@ -1,37 +1,49 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
- isAddProduct: false,
- prodData: {},
- isEditProduct: false,
- isDelete: false,
- categoryList: []
-}
+  isAddProduct: false,
+  prodData: {},
+  isEditProduct: false,
+  isDelete: false,
+  categoryList: [],
+  steps: 0,
+};
 
 export const productSlice = createSlice({
-  name: 'product',
+  name: "product",
   initialState,
   reducers: {
-    productAddtion: (state, action)=>{
-        state.isAddProduct = action.payload
+    productAddtion: (state, action) => {
+      state.isAddProduct = action.payload;
     },
-    productDetails: (state, action)=>{
-      state.prodData = action.payload
-    }, 
-
-    productEdit:(state, action)=>{
-      state.isEditProduct = action.payload
+    productDetails: (state, action) => {
+      state.prodData = action.payload;
     },
 
-    productDelete: (state, action)=>{
-      state.isDelete = action.payload
+    productEdit: (state, action) => {
+      state.isEditProduct = action.payload;
     },
-    getCategoryList: (state, action)=>{
-      state.categoryList = action.payload
-    }
+
+    productDelete: (state, action) => {
+      state.isDelete = action.payload;
+    },
+    getCategoryList: (state, action) => {
+      state.categoryList = action.payload;
+    },
+
+    getSteps: (state, action) => {
+      state.steps = action.payload;
+    },
   },
-})
+});
 
-export const { productAddtion, productDetails, productEdit, productDelete, getCategoryList } = productSlice.actions
+export const {
+  productAddtion,
+  productDetails,
+  productEdit,
+  productDelete,
+  getCategoryList,
+  getSteps,
+} = productSlice.actions;
 
-export default productSlice.reducer
+export default productSlice.reducer;

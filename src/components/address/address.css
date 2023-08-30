@@ -1,0 +1,25 @@
+.address-commerce{
+    position: relative;
+    left: 451px;
+    width: 500px;
+}
+
+.address-span{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.address-btn{
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    justify-content: center;
+}
+
+.stepper-address{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 40px;
+}

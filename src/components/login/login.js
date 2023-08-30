@@ -81,9 +81,10 @@ export default function SignIn() {
     let result = axios.post("http://localhost:8080/api/auth/signin", loginData);
     result
       .then((res) => {
-        console.log(res.data);
-        let data = res.data;
-        localStorage.setItem("token", data.token)
+        let token = res.headers.get("X-Auth-Token");
+        
+        localStorage.setItem("token", token)
+        localStorage.setItem("user", res.data.roles[0])
         console.log(data.token);
         dispatch(loginGetData(res.data));
         navigate("/products/list");

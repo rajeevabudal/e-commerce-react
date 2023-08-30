@@ -48,7 +48,7 @@ export default function ImgMediaCard({
           BUY
         </Button>
         <div className="card-edit-delete">
-          {loginData.role[0].authority === "ADMIN" && (
+          {loginData.roles[0] === "ADMIN" && (
             <>
               <Button size="small">
                 <EditIcon onClick={handleEdit} />
