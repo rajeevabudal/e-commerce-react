@@ -7,6 +7,9 @@ const initialState = {
   isDelete: false,
   categoryList: [],
   steps: 0,
+  address: {},
+  commerceQuantity: 0,
+  orderedDetails: {},
 };
 
 export const productSlice = createSlice({
@@ -34,6 +37,18 @@ export const productSlice = createSlice({
     getSteps: (state, action) => {
       state.steps = action.payload;
     },
+
+    getAddress: (state, action) => {
+      state.address = action.payload;
+    },
+
+    getQuantity: (state, action) => {
+      state.commerceQuantity = action.payload;
+    },
+
+    getOrderedDetails: (state, action) => {
+      state.orderedDetails = action.payload;
+    },
   },
 });
 
@@ -44,6 +59,9 @@ export const {
   productDelete,
   getCategoryList,
   getSteps,
+  getAddress,
+  getQuantity,
+  getOrderedDetails,
 } = productSlice.actions;
 
 export default productSlice.reducer;

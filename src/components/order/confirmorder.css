@@ -1,0 +1,28 @@
+.order-address-details {
+  display: flex;
+}
+
+.order-details {
+  display: flex;
+  width: 60%;
+  flex-direction: column;
+  text-align: left  ;
+}
+
+.address-details {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  text-align: left;
+}
+
+.details-user-address {
+  white-space: pre-line;
+}
+
+.divider-details {
+  display: flex;
+  align-items: stretch;
+  height: auto;
+  margin-right: 23px;
+}

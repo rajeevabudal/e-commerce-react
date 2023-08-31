@@ -2,16 +2,22 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import Snackbar from "@mui/material/Snackbar";
 import Container from "@mui/material/Container";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { getSteps } from "../../redux/productSlice";
-import "./products.css";
+import {
+  getOrderedDetails,
+  getQuantity,
+  getSteps,
+} from "../../redux/productSlice";
 import SelectAddress from "../address/address";
+import "./products.css";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -28,17 +34,35 @@ export default function ProductDetails() {
     marginTop: 120,
   }));
 
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
   const [state, setState] = React.useState({
     productDetails: {},
     placeOrder: false,
+    vertical: "top",
+    horizontal: "right",
+    error: "",
+    open: false,
+    isError: false,
+    quantity: 0,
   });
 
-  const { productDetails, placeOrder } = state;
+  const {
+    productDetails,
+    placeOrder,
+    vertical,
+    horizontal,
+    error,
+    open,
+    isError,
+    quantity,
+  } = state;
   React.useEffect(() => {
     axios
       .get(`http://localhost:8080/api/products/${id}`)
       .then((result) => {
-        console.log(result.data);
         setState({ ...state, productDetails: result.data });
       })
       .catch((error) => {
@@ -46,12 +70,50 @@ export default function ProductDetails() {
       });
   }, []);
 
-  const handlePlaceOrder = () => {
-    navigate("/products/selectAddress");
-    setState({ ...state, placeOrder: true });
-    dispatch(getSteps(1));
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setState({ ...state, open: false });
   };
-  console.log(placeOrder);
+  const displayErrorMessage = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleClose}
+        key={vertical + horizontal}
+        autoHideDuration={6000}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {error}
+        </Alert>
+      </Snackbar>
+    );
+  };
+  const handlePlaceOrder = () => {
+    if (quantity === 0 || quantity === "") {
+      setState({
+        ...state,
+        isError: true,
+        error: "Please enter the quantity",
+        placeOrder: false,
+      });
+    } else {
+      dispatch(getOrderedDetails(productDetails));
+      setState({ ...state, placeOrder: true });
+      navigate("/products/selectAddress");
+      dispatch(getSteps(1));
+      dispatch(getQuantity(quantity));
+    }
+  };
+
+  const handleQuantity = (event) => {
+    setState({ ...state, quantity: event.target.value });
+  };
+
+  console.log(error, isError);
   return (
     <>
       <Container maxWidth="lg">
@@ -89,8 +151,8 @@ export default function ProductDetails() {
                             fullWidth
                             id="Quantity"
                             label="Enter Quantity"
-                            // onChange={(e) => handleChange("name", e)}
-                            // value={name}
+                            onChange={(e) => handleQuantity(e)}
+                            value={quantity}
                             autoFocus
                             style={{ width: "20%" }}
                           />
@@ -113,6 +175,7 @@ export default function ProductDetails() {
           </Grid>
         </Box>
       </Container>
+      {isError && displayErrorMessage()}
     </>
   );
 }

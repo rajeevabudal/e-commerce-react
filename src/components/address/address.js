@@ -6,30 +6,44 @@ import Link from "@mui/material/Link";
 import Creatable from "react-select/creatable";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Select from "react-select";
 import axios from "axios";
+import Snackbar from "@mui/material/Snackbar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Stepper from "../../common/stepper/stepper";
-import { getSteps } from "../../redux/productSlice";
+import { getAddress, getSteps } from "../../redux/productSlice";
 import "./address.css";
 
 let options = [];
-const createOption = (label) => ({
+const createOption = (label, value) => ({
   label,
-  value: label.toLowerCase().replace(/\W/g, ""),
+  value: value,
 });
 const defaultTheme = createTheme();
 export default function SelectAddress() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
   const [addressData, setAddressData] = React.useState([]);
+  const [addressId, setAddressId] = React.useState(0);
+  const [state, setState] = React.useState({
+    vertical: "top",
+    horizontal: "right",
+    error: "",
+    open: false,
+    isError: false,
+  });
 
+  const { isError, vertical, horizontal, error, open } = state;
   React.useEffect(() => {
     const token = localStorage.getItem("token");
     let axiosConfig = {
@@ -50,7 +64,8 @@ export default function SelectAddress() {
         response.data.map((address) => {
           arrayAddress.push(
             createOption(
-              address.name + "--->" + address.street + "," + address.city
+              address.name + "--->" + address.street + "," + address.city,
+              address
             )
           );
           setAddressData(arrayAddress);
@@ -93,7 +108,6 @@ export default function SelectAddress() {
       zipcode: data.get("ZipCode"),
       user: user,
     };
-    console.log(addressSubmitData);
     axios
       .post(
         "http://localhost:8080/api/addresses",
@@ -113,11 +127,58 @@ export default function SelectAddress() {
   };
 
   const handleNext = () => {
-    navigate("/products/confirmOrder");
+    if (addressId !== 0) {
+      const token = localStorage.getItem("token");
+      let axiosConfig = {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      navigate("/products/confirmOrder");
 
-    dispatch(getSteps(steps + 1));
+      dispatch(getSteps(steps + 1));
+
+      axios
+        .get(`http://localhost:8080/api/addresses/${addressId}`, axiosConfig)
+        .then((response) => {
+          dispatch(getAddress(response.data));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      setState({ ...state, isError: true, error: "Please select address" });
+    }
   };
-  console.log(addressData);
+
+  const handleSelectAddress = (selectedValue) => {
+    setAddressId(selectedValue?.value?.id);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setState({ ...state, open: false });
+  };
+  const displayErrorMessage = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleClose}
+        key={vertical + horizontal}
+        autoHideDuration={6000}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {error}
+        </Alert>
+      </Snackbar>
+    );
+  };
   return (
     <>
       <Container maxWidth="lg" className="stepper-address">
@@ -133,7 +194,10 @@ export default function SelectAddress() {
       </Container>
       <Grid sx={{ flexGrow: 1 }} className="address-commerce">
         <p>Select Address</p>
-        <Select options={addressData} />
+        <Select
+          options={addressData}
+          onChange={(newValue) => handleSelectAddress(newValue)}
+        />
         <span className="address-span">-OR-</span>
         <span className="address-span">
           <Typography component="h1" variant="h5">
@@ -281,6 +345,7 @@ export default function SelectAddress() {
           </Button>
         </div>
       </Grid>
+      {isError && displayErrorMessage()}
     </>
   );
 }

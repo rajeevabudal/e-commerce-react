@@ -9,8 +9,9 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Stepper from "../../common/stepper/stepper";
+import Divider from "@mui/material/Divider";
+import { getAddress, getSteps } from "../../redux/productSlice";
 import "./confirmorder.css";
-import { getSteps } from "../../redux/productSlice";
 
 export default function ConfirmOrder() {
   const Item = styled(Paper)(({ theme }) => ({
@@ -24,13 +25,40 @@ export default function ConfirmOrder() {
   const dispatch = useDispatch();
   const navigate = useNavigate(-1);
   const steps = useSelector((state) => state.product.steps);
-  const handleNext = () => {
+  const address = useSelector((state) => state.product.address);
+  const quantity = useSelector((state) => state.product.commerceQuantity);
+  const orderedDetails = useSelector((state) => state.product.orderedDetails);
+  const [userAddress, setUserAddress] = React.useState("");
+  const handlePlaceOrder = () => {
     dispatch(getSteps(steps + 1));
   };
   const handleBack = () => {
     dispatch(getSteps(steps - 1));
+    dispatch(getAddress(""));
     navigate(-1);
   };
+  React.useEffect(() => {
+    // setUserAddress(address);
+    console.log(quantity, orderedDetails);
+    let addressString = "";
+    for (let key in address) {
+      addressString =
+        address["name"] +
+        "\n" +
+        "Contact Number :" +
+        address["contactNumber"] +
+        "\n" +
+        address["street"] +
+        " " +
+        address["city"] +
+        "\n" +
+        address["state"] +
+        "\n" +
+        address["zipcode"];
+    }
+    setUserAddress(addressString);
+  }, [address]);
+  console.log(userAddress);
   return (
     <>
       <Container maxWidth="lg" className="stepper-address">
@@ -50,11 +78,46 @@ export default function ConfirmOrder() {
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
             <Grid xs={12}>
-              <Item>xs=12</Item>
+              <Item className="order-address-details">
+                <div className="order-details">
+                  <div>
+                    <h1>{orderedDetails.name}</h1>
+                  </div>
+                  <div>
+                    <span>Quantity: {quantity}</span>
+                  </div>
+                  <div>
+                    <span>Category: {orderedDetails?.category}</span>
+                  </div>
+                  <div>
+                    <span>C{orderedDetails?.description}</span>
+                  </div>
+                  <div>
+                    <h1>Total Price : {orderedDetails?.price * quantity}</h1>
+                  </div>
+                </div>
+                <div className="divider-details">
+                  <Divider orientation="vertical" />
+                </div>
+                <div className="address-details">
+                  <div>
+                    <p>
+                      <b>Address Details :</b>{" "}
+                    </p>
+                  </div>
+                  <div className="details-user-address">{userAddress}</div>
+                </div>
+              </Item>
             </Grid>
           </Grid>
           <Button onClick={handleBack}>Back</Button>
-          <Button disabled={steps === 3}onClick={handleNext}>Next</Button>
+          <Button
+            disabled={steps === 3}
+            onClick={handlePlaceOrder}
+            variant="contained"
+          >
+            PLACE ORDER
+          </Button>
         </Box>
       </Container>
     </>
