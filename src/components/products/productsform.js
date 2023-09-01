@@ -73,6 +73,7 @@ export default function ProductForm({ product }) {
   }, [isEditProduct, isAddProduct]);
 
   const handleCreate = (inputValue) => {
+    console.log(inputValue);
     setState({ ...state, isLoading: true });
     setTimeout(() => {
       const newOption = createOption(inputValue);
@@ -160,7 +161,7 @@ export default function ProductForm({ product }) {
     // if("name")
   };
 
-  console.log(value)
+  console.log(value);
   return (
     <>
       <ThemeProvider theme={defaultTheme}>
@@ -207,7 +208,7 @@ export default function ProductForm({ product }) {
                     }
                     onCreateOption={handleCreate}
                     options={options}
-                    value={value}
+                    // value={value}
                     name="category"
                   />
                 </Grid>

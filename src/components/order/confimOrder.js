@@ -8,6 +8,7 @@ import { Button } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Stepper from "../../common/stepper/stepper";
 import Divider from "@mui/material/Divider";
 import { getAddress, getSteps } from "../../redux/productSlice";
@@ -31,6 +32,35 @@ export default function ConfirmOrder() {
   const [userAddress, setUserAddress] = React.useState("");
   const handlePlaceOrder = () => {
     dispatch(getSteps(steps + 1));
+    console.log(quantity);
+    const user = localStorage.getItem("user");
+    console.log(user);
+    console.log(userAddress);
+    console.log(orderedDetails.name);
+    const token = localStorage.getItem("token");
+    let axiosConfig = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    let orderSubmit = {
+      quantity: quantity,
+      user: user,
+      product: orderedDetails.id,
+      address: address.id,
+    };
+
+    axios
+      .post("http://localhost:8080/api/orders", orderSubmit, axiosConfig)
+      .then((response) => {
+        console.log(response);
+        navigate("/products/list");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const handleBack = () => {
     dispatch(getSteps(steps - 1));
@@ -38,8 +68,6 @@ export default function ConfirmOrder() {
     navigate(-1);
   };
   React.useEffect(() => {
-    // setUserAddress(address);
-    console.log(quantity, orderedDetails);
     let addressString = "";
     for (let key in address) {
       addressString =
@@ -110,14 +138,16 @@ export default function ConfirmOrder() {
               </Item>
             </Grid>
           </Grid>
-          <Button onClick={handleBack}>Back</Button>
-          <Button
-            disabled={steps === 3}
-            onClick={handlePlaceOrder}
-            variant="contained"
-          >
-            PLACE ORDER
-          </Button>
+          <div className="back-place-order">
+            <Button onClick={handleBack}>Back</Button>
+            <Button
+              disabled={steps === 3}
+              onClick={handlePlaceOrder}
+              variant="contained"
+            >
+              PLACE ORDER
+            </Button>
+          </div>
         </Box>
       </Container>
     </>

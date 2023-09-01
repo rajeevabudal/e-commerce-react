@@ -24,8 +24,8 @@ export default function ProductDetails() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const Item = styled(Paper)(({ theme }) => ({
-    // backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    // ...theme.typography.body2,
+    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "transparent",
+    ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: "left",
     justifyContent: "center",
@@ -119,8 +119,8 @@ export default function ProductDetails() {
       <Container maxWidth="lg">
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
-            <Grid xs={12}>
-              <Item>
+            <Grid xs={12} className="details-prod">
+              {/* <Item> */}
                 {placeOrder ? (
                   <SelectAddress />
                 ) : (
@@ -136,7 +136,10 @@ export default function ProductDetails() {
                       </Grid>
                       <Grid item xs={8}>
                         <div>
-                          <h1>{productDetails.name}</h1>
+                          <div className="productdetails-name-price">
+                            <h1>{productDetails.name}</h1>
+                            <Button variant="contained">Available Quantity : {productDetails.availableItems}</Button>
+                          </div>
                           <p>
                             Category: <b>{productDetails.name}</b>
                           </p>
@@ -170,7 +173,7 @@ export default function ProductDetails() {
                     </Grid>
                   </div>
                 )}
-              </Item>
+             {/* </Item> */}
             </Grid>
           </Grid>
         </Box>
