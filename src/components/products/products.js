@@ -13,6 +13,7 @@ import {
   productEdit,
   productDelete,
   getCategoryList,
+  getProductDetails,
 } from "../../redux/productSlice";
 import AlertDialogSlide from "../../common/Dialog/dialog";
 import "./products.css";
@@ -39,6 +40,8 @@ const ProductsPage = () => {
   const { alignment, categories, product, isDelete, sortData } = state;
   const [productData, setProdData] = React.useState([]);
   const [unfilteredProductData, setUnfilteredProductData] = React.useState([]);
+  const [isSortClicked, setIsSortClicked] = React.useState(false);
+  const [sortedData, setSortedData] = React.useState([]);
   React.useEffect(() => {
     const token = localStorage.getItem("token");
     const headers = {
@@ -48,6 +51,7 @@ const ProductsPage = () => {
     result
       .then((res) => {
         console.log(res.data);
+        dispatch(getProductDetails(res.data));
         setUnfilteredProductData(res.data);
         // setState({ ...state, productData: res.data });
         setProdData(res.data);
@@ -79,13 +83,34 @@ const ProductsPage = () => {
   }
 
   const handleChange = (event, newAlignment) => {
-    console.log(event.target.value, unfilteredProductData);
+    console.log(sortData);
+    let unfilteredData = [...unfilteredProductData];
     if (event.target.value === "all") {
-      setProdData(unfilteredProductData);
+      if (!isSortClicked) {
+        setProdData(unfilteredProductData);
+      } else {
+        if (sortData === "lowtohigh") {
+          unfilteredData.sort((a, b) => a.price - b.price);
+          setProdData(unfilteredData);
+          dispatch(getProductDetails(unfilteredData));
+        } else if (sortData === "hightolow") {
+          unfilteredData.sort((a, b) => b.price - a.price);
+          setProdData(unfilteredData);
+          dispatch(getProductDetails(unfilteredData));
+        } else if (sortData === "default") {
+          setProdData(unfilteredProductData);
+          dispatch(getProductDetails(unfilteredProductData));
+        }
+      }
+
+      // handleChange("Default")
     } else {
-      let filteredProduct = productData.filter(
+      
+      console.log(unfilteredData);
+      let filteredProduct = unfilteredData.filter(
         (product) => product.category === event.target.value
       );
+      dispatch(getProductDetails(filteredProduct));
       setProdData(filteredProduct);
     }
 
@@ -107,21 +132,26 @@ const ProductsPage = () => {
     navigate(`/products/${product.id}`);
   };
   const handleSort = (newValue) => {
-    let sortableData = [];
-    if( newValue.value === "lowtohigh"){
-      sortableData = productData.sort((a,b)=>a.price - b.price);
-      // setProdData(sortableData)
-    }else if(newValue.value === "hightolow"){
-      sortableData = productData.sort((a,b)=>b.price - a.price);
-      // setProdData(sortableData)
-    }else if(newValue.value === "default"){
-      sortableData = unfilteredProductData;
-      // setProdData(sortableData)
+    setIsSortClicked(true);
+    let sortableData = [...productData];
+    if (newValue.value === "lowtohigh") {
+      sortableData.sort((a, b) => a.price - b.price);
+      setProdData(sortableData);
+      setSortedData(sortableData);
+      dispatch(getProductDetails(sortableData));
+      setState({ ...state, sortData: newValue.value });
+    } else if (newValue.value === "hightolow") {
+      sortableData.sort((a, b) => b.price - a.price);
+      setProdData(sortableData);
+      setSortedData(sortableData);
+      dispatch(getProductDetails(sortableData));
+      setState({ ...state, sortData: newValue.value });
+    } else if (newValue.value === "default") {
+      setProdData(unfilteredProductData);
+      setSortedData(unfilteredProductData);
+      dispatch(getProductDetails(sortableData));
+      setState({ ...state, sortData: newValue.value });
     }
-    
-    console.log(sortableData);
-    setState({ ...state, sortData: newValue.value });
-    
   };
   function displayProduct() {
     return (
@@ -215,7 +245,7 @@ const ProductsPage = () => {
         console.log(err);
       });
   };
-  console.log(unfilteredProductData);
+  console.log(sortedData);
   return (
     <>
       {isAddProduct || isEditProduct ? displayProductForm() : displayProduct()}

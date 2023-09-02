@@ -30,13 +30,15 @@ export default function ProductForm({ product }) {
   const [availableItems, setAvailableItems] = React.useState(0);
   const [description, setDescription] = React.useState("");
   const [imageUrl, setImageUrl] = React.useState("");
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState({});
+  const [options, setOptions] = React.useState([]);
   const [state, setState] = React.useState({
     isLoading: false,
-    options: createOption("ALL"),
+    // options: createOption("ALL"),
+    // value: ""
   });
 
-  const { isLoading, options } = state;
+  const { isLoading } = state;
 
   React.useEffect(() => {
     // console.log(product.name, isAddProduct);
@@ -47,7 +49,7 @@ export default function ProductForm({ product }) {
       setAvailableItems(0);
       setDescription("");
       setImageUrl("");
-      setValue("");
+      setValue({})
     } else {
         axios
       .get(`http://localhost:8080/api/products/${id}`)
@@ -59,7 +61,8 @@ export default function ProductForm({ product }) {
         setAvailableItems(result.data.availableItems);
         setDescription(result.data.description);
         setImageUrl(result.data.imageUrl);
-        setValue(result.data.category);
+        let value = createOption(result.data.category)
+        setValue(value);
       })
       .catch((error) => {
         console.log(error);
@@ -69,28 +72,30 @@ export default function ProductForm({ product }) {
     let categories = categoryList.map((cat) => {
       return createOption(cat);
     });
-    setState({ ...state, options: categories });
+    setOptions(categories);
+    // setState({ ...state, options: categories });
   }, [isEditProduct, isAddProduct]);
 
   const handleCreate = (inputValue) => {
     console.log(inputValue);
+    let newOption;
     setState({ ...state, isLoading: true });
     setTimeout(() => {
-      const newOption = createOption(inputValue);
+      newOption = createOption(inputValue);
       setState({
         ...state,
         isLoading: false,
-        options: [...options, newOption],
       });
+      setOptions(newOption);
       setValue(newOption);
     }, 1000);
+    
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const token = localStorage.getItem("token");
-    console.log(token, id);
     let axiosConfig = {
       headers: {
         "Content-Type": "application/json",
@@ -158,7 +163,6 @@ export default function ProductForm({ product }) {
         setPrice(event.target.value);
         break;
     }
-    // if("name")
   };
 
   console.log(value);
@@ -201,14 +205,14 @@ export default function ProductForm({ product }) {
                 <Grid item xs={12}>
                   <Creatable
                     isClearable
-                    //isDisabled={isLoading}
+                    isDisabled={isLoading}
                     isLoading={isLoading}
                     onChange={(newValue) =>
-                      setState({ ...state, value: newValue })
+                      setValue(newValue)
                     }
                     onCreateOption={handleCreate}
                     options={options}
-                    // value={value}
+                    value={value}
                     name="category"
                   />
                 </Grid>

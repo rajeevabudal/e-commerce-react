@@ -2,22 +2,22 @@ import React, { useState } from 'react';
 import { TextField, InputAdornment, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import "./search.css"
-const SearchBar = ({ onSearch }) => {
-  const [searchText, setSearchText] = useState('');
+const SearchBar = ({ onSearch, onChange, searchText, onKeyPress }) => {
+  // const [searchText, setSearchText] = useState('');
 
   const handleSearch = () => {
     onSearch(searchText);
   };
 
-  const handleInputChange = (event) => {
-    setSearchText(event.target.value);
-  };
+  // const handleInputChange = (event) => {
+  //   setSearchText(event.target.value);
+  // };
 
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      handleSearch();
-    }
-  };
+  // const handleKeyPress = (event) => {
+  //   if (event.key === 'Enter') {
+  //     handleSearch();
+  //   }
+  // };
 
   return (
     <TextField
@@ -25,8 +25,8 @@ const SearchBar = ({ onSearch }) => {
       //variant="filled"
       size="small"
       value={searchText}
-      onChange={handleInputChange}
-      onKeyPress={handleKeyPress}
+      onChange={onChange}
+      onKeyPress={onKeyPress}
 
       InputProps={{
         startAdornment: (

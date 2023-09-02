@@ -10,6 +10,7 @@ const initialState = {
   address: {},
   commerceQuantity: 0,
   orderedDetails: {},
+  searchValue: "",
 };
 
 export const productSlice = createSlice({
@@ -19,7 +20,7 @@ export const productSlice = createSlice({
     productAddtion: (state, action) => {
       state.isAddProduct = action.payload;
     },
-    productDetails: (state, action) => {
+    getProductDetails: (state, action) => {
       state.prodData = action.payload;
     },
 
@@ -49,6 +50,10 @@ export const productSlice = createSlice({
     getOrderedDetails: (state, action) => {
       state.orderedDetails = action.payload;
     },
+
+    getSearchValue: (state, action) => {
+      state.searchValue = action.payload;
+    },
   },
 });
 
@@ -62,6 +67,8 @@ export const {
   getAddress,
   getQuantity,
   getOrderedDetails,
+  getSearchValue,
+  getProductDetails,
 } = productSlice.actions;
 
 export default productSlice.reducer;
