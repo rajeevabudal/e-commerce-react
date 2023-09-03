@@ -108,16 +108,29 @@ export default function SelectAddress() {
       zipcode: data.get("ZipCode"),
       user: user,
     };
-    axios
-      .post(
-        "http://localhost:8080/api/addresses",
-        addressSubmitData,
-        axiosConfig
-      )
-      .then((res) => console.log(res.data))
-      .catch((error) => {
-        console.log(error);
-      });
+    let isAddressAvailableToSave = true;
+    if (
+      addressSubmitData.name === "" &&
+      addressSubmitData.contactNumber === "" &&
+      addressSubmitData.street === "" &&
+      addressSubmitData.city === "" &&
+      addressSubmitData.state === "" &&
+      addressSubmitData.landmark === "" &&
+      addressSubmitData.zipcode === ""
+    ) {
+      isAddressAvailableToSave = false;
+    }
+    isAddressAvailableToSave &&
+      axios
+        .post(
+          "http://localhost:8080/api/addresses",
+          addressSubmitData,
+          axiosConfig
+        )
+        .then((res) => console.log(res.data))
+        .catch((error) => {
+          console.log(error);
+        });
   };
 
   const handleBack = () => {

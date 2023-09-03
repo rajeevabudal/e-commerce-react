@@ -38,14 +38,16 @@ export default function ProductDetails() {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
+  const [isError, setIsError] = React.useState(false);
+  const [error, setError] = React.useState("");
   const [state, setState] = React.useState({
     productDetails: {},
     placeOrder: false,
     vertical: "top",
     horizontal: "right",
-    error: "",
+    // error: "",
     open: false,
-    isError: false,
+    // isError: false,
     quantity: 0,
   });
 
@@ -54,9 +56,9 @@ export default function ProductDetails() {
     placeOrder,
     vertical,
     horizontal,
-    error,
+    // error,
     open,
-    isError,
+    // isError,
     quantity,
   } = state;
   React.useEffect(() => {
@@ -96,11 +98,23 @@ export default function ProductDetails() {
     if (quantity === 0 || quantity === "") {
       setState({
         ...state,
-        isError: true,
+        // isError: true,
+        // error: "Please enter the quantity",
+        placeOrder: false,
+      });
+      setIsError(true);
+      setError("Please Enter the Quantity");
+    }else if(quantity>productDetails.availableItems){
+      setState({
+        ...state,
+        // isError: true,
         error: "Please enter the quantity",
         placeOrder: false,
       });
+      setIsError(true);
+      setError("Please Enter the Quantity");
     } else {
+      
       dispatch(getOrderedDetails(productDetails));
       setState({ ...state, placeOrder: true });
       navigate("/products/selectAddress");
@@ -163,6 +177,7 @@ export default function ProductDetails() {
                             <Button
                               variant="contained"
                               className="place-order"
+                              disabled={productDetails.availableItems === 0}
                               onClick={handlePlaceOrder}
                             >
                               Place Order

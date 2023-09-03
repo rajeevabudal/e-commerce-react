@@ -121,7 +121,7 @@ export default function ConfirmOrder() {
                     <span>C{orderedDetails?.description}</span>
                   </div>
                   <div>
-                    <h1>Total Price : {orderedDetails?.price * quantity}</h1>
+                    <h1 style={{color:"red"}}>Total Price : {orderedDetails?.price * quantity}</h1>
                   </div>
                 </div>
                 <div className="divider-details">
