@@ -11,6 +11,8 @@ const initialState = {
   commerceQuantity: 0,
   orderedDetails: {},
   searchValue: "",
+  isSearched: false,
+  searchData: [],
 };
 
 export const productSlice = createSlice({
@@ -54,6 +56,14 @@ export const productSlice = createSlice({
     getSearchValue: (state, action) => {
       state.searchValue = action.payload;
     },
+
+    isSearch: (state, action)=>{
+      state.isSearched = action.payload;
+    },
+    getSearchedDetails: (state, action) => {
+      state.searchData = action.payload;
+    },
+
   },
 });
 
@@ -69,6 +79,8 @@ export const {
   getOrderedDetails,
   getSearchValue,
   getProductDetails,
+  isSearch,
+  getSearchedDetails,
 } = productSlice.actions;
 
 export default productSlice.reducer;

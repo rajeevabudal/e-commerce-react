@@ -22,8 +22,10 @@ const ProductsPage = () => {
   const dispatch = useDispatch();
   const isAddProduct = useSelector((state) => state.product.isAddProduct);
   const isEditProduct = useSelector((state) => state.product.isEditProduct);
+  const searchValue = useSelector((state) => state.product.searchValue);
+  const searchData = useSelector((state) => state.product.searchData);
+  const isSearched = useSelector((state) => state.product.isSearched);
   const [state, setState] = React.useState({
-    // productData: [],
     alignment: "",
     categories: ["all"],
     product: {},
@@ -43,22 +45,25 @@ const ProductsPage = () => {
   const [isSortClicked, setIsSortClicked] = React.useState(false);
   const [sortedData, setSortedData] = React.useState([]);
   React.useEffect(() => {
+    isSearched && setProdData(searchData);
+
     const token = localStorage.getItem("token");
     const headers = {
       Authorization: token,
     };
-    const result = axios.get("http://localhost:8080/api/products", headers);
-    result
-      .then((res) => {
-        console.log(res.data);
-        dispatch(getProductDetails(res.data));
-        setUnfilteredProductData(res.data);
-        // setState({ ...state, productData: res.data });
-        setProdData(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    !isSearched &&
+      axios
+        .get("http://localhost:8080/api/products", headers)
+        .then((res) => {
+          console.log(res.data);
+          dispatch(getProductDetails(res.data));
+          setUnfilteredProductData(res.data);
+          // setState({ ...state, productData: res.data });
+          setProdData(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
 
     const getCategory = axios.get(
       "http://localhost:8080/api/products/categories",
@@ -76,7 +81,7 @@ const ProductsPage = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [isAddProduct]);
+  }, [isAddProduct, searchValue]);
 
   function displayProductForm() {
     return <ProductForm product={product} />;
@@ -105,7 +110,6 @@ const ProductsPage = () => {
 
       // handleChange("Default")
     } else {
-      
       console.log(unfilteredData);
       let filteredProduct = unfilteredData.filter(
         (product) => product.category === event.target.value
@@ -245,7 +249,7 @@ const ProductsPage = () => {
         console.log(err);
       });
   };
-  console.log(sortedData);
+  console.log(productData);
   return (
     <>
       {isAddProduct || isEditProduct ? displayProductForm() : displayProduct()}

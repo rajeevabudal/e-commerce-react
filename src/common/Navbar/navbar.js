@@ -6,7 +6,10 @@ import { isLoginData } from "../../redux/loginSlice";
 import {
   productAddtion,
   productEdit,
+  getProductDetails,
   getSearchValue,
+  isSearch,
+  getSearchedDetails,
 } from "../../redux/productSlice";
 import SearchBar from "../Search/search";
 import "./navbar.css";
@@ -40,11 +43,33 @@ const NavigationBar = ({ navItems, heading }) => {
 
   const handleSearch = (e) => {
     console.log(e.target.value);
+    console.log(prodData)
+    let unSearchedData = [...prodData];
+    console.log(unSearchedData);
+    let resEarched = unSearchedData.filter((data) =>
+      data.name.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+
+    console.log(resEarched);
+    dispatch(getSearchedDetails(resEarched));
+    dispatch(isSearch(true))
+    dispatch(getSearchValue(searchValue));
     setSearchValue(e.target.value);
+
   };
 
   const handleKeyPressSearch = () => {
-    dispatch(getSearchValue(searchValue));
+    // let unSearchedData = [...prodData];
+
+    // let resEarched = unSearchedData.filter((data) =>
+    //   data.name.toLowerCase().includes(searchValue.toLowerCase())
+    // );
+
+    // console.log(resEarched);
+    // dispatch(getProductDetails(resEarched));
+    // dispatch(isSearch(true))
+    // dispatch(getSearchValue(searchValue));
+    
   };
   return (
     <AppBar position="static">
