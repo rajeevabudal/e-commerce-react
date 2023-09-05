@@ -55,7 +55,7 @@ const ProductsPage = () => {
       axios
         .get("http://localhost:8080/api/products", headers)
         .then((res) => {
-          console.log(res.data);
+         
           dispatch(getProductDetails(res.data));
           setUnfilteredProductData(res.data);
           // setState({ ...state, productData: res.data });
@@ -73,7 +73,7 @@ const ProductsPage = () => {
     let catArray = ["all"];
     getCategory
       .then((res) => {
-        console.log(res.data);
+        
         dispatch(getCategoryList(res.data));
         catArray = [...catArray, ...res.data];
         setState({ ...state, categories: catArray });
@@ -88,7 +88,7 @@ const ProductsPage = () => {
   }
 
   const handleChange = (event, newAlignment) => {
-    console.log(sortData);
+  
     let unfilteredData = [...unfilteredProductData];
     if (event.target.value === "all") {
       if (!isSortClicked) {
@@ -110,7 +110,6 @@ const ProductsPage = () => {
 
       // handleChange("Default")
     } else {
-      console.log(unfilteredData);
       let filteredProduct = unfilteredData.filter(
         (product) => product.category === event.target.value
       );
@@ -237,19 +236,19 @@ const ProductsPage = () => {
         Authorization: `Bearer ${token}`,
       },
     };
-    console.log("delter", product);
+    
     setState({ ...state, isDelete: false });
     axios
       .delete(`http://localhost:8080/api/products/${product.id}`, headers)
       .then((res) => {
-        console.log(res);
+        
         displayProduct();
       })
       .catch((err) => {
         console.log(err);
       });
   };
-  console.log(productData);
+  
   return (
     <>
       {isAddProduct || isEditProduct ? displayProductForm() : displayProduct()}

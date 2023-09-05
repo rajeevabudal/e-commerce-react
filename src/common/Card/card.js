@@ -19,7 +19,6 @@ export default function ImgMediaCard({
   handleBuy,
 }) {
   const loginData = useSelector((state) => state.login.signInData);
-  console.log(loginData);
   return (
     <Card sx={{ maxWidth: 345 }} className="card-overview">
       <CardMedia

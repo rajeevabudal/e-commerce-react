@@ -42,15 +42,10 @@ const NavigationBar = ({ navItems, heading }) => {
   };
 
   const handleSearch = (e) => {
-    console.log(e.target.value);
-    console.log(prodData)
     let unSearchedData = [...prodData];
-    console.log(unSearchedData);
     let resEarched = unSearchedData.filter((data) =>
       data.name.toLowerCase().includes(e.target.value.toLowerCase())
     );
-
-    console.log(resEarched);
     dispatch(getSearchedDetails(resEarched));
     dispatch(isSearch(true))
     dispatch(getSearchValue(searchValue));

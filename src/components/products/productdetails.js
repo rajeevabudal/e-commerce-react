@@ -18,7 +18,9 @@ import {
 } from "../../redux/productSlice";
 import SelectAddress from "../address/address";
 import "./products.css";
-
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 export default function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -33,10 +35,6 @@ export default function ProductDetails() {
     alignItems: "center",
     marginTop: 120,
   }));
-
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
 
   const [isError, setIsError] = React.useState(false);
   const [error, setError] = React.useState("");
@@ -101,20 +99,21 @@ export default function ProductDetails() {
         // isError: true,
         // error: "Please enter the quantity",
         placeOrder: false,
+        open: true,
       });
       setIsError(true);
       setError("Please Enter the Quantity");
-    }else if(quantity>productDetails.availableItems){
+    } else if (quantity > productDetails.availableItems) {
       setState({
         ...state,
         // isError: true,
-        error: "Please enter the quantity",
+        // error: "Please enter the quantity",
         placeOrder: false,
+        open: true,
       });
       setIsError(true);
-      setError("Please Enter the Quantity");
+      setError("Quantity is greater than available quantity");
     } else {
-      
       dispatch(getOrderedDetails(productDetails));
       setState({ ...state, placeOrder: true });
       navigate("/products/selectAddress");
@@ -126,8 +125,6 @@ export default function ProductDetails() {
   const handleQuantity = (event) => {
     setState({ ...state, quantity: event.target.value });
   };
-
-  console.log(error, isError);
   return (
     <>
       <Container maxWidth="lg">
@@ -135,60 +132,62 @@ export default function ProductDetails() {
           <Grid container spacing={2}>
             <Grid xs={12} className="details-prod">
               {/* <Item> */}
-                {placeOrder ? (
-                  <SelectAddress />
-                ) : (
-                  <div>
-                    <Grid container spacing={2}>
-                      <Grid item xs={4}>
-                        <div>
-                          <img
-                            src={productDetails.imageUrl}
-                            style={{ height: "100%", width: "100%" }}
-                          />
-                        </div>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <div>
-                          <div className="productdetails-name-price">
-                            <h1>{productDetails.name}</h1>
-                            <Button variant="contained">Available Quantity : {productDetails.availableItems}</Button>
-                          </div>
-                          <p>
-                            Category: <b>{productDetails.name}</b>
-                          </p>
-                          <p>{productDetails.description}</p>
-                          <p style={{ color: "red" }}>
-                            &#8377;{productDetails.price}
-                          </p>
-                          <TextField
-                            autoComplete="given-name"
-                            name="Quantity"
-                            required
-                            fullWidth
-                            id="Quantity"
-                            label="Enter Quantity"
-                            onChange={(e) => handleQuantity(e)}
-                            value={quantity}
-                            autoFocus
-                            style={{ width: "20%" }}
-                          />
-                          <div>
-                            <Button
-                              variant="contained"
-                              className="place-order"
-                              disabled={productDetails.availableItems === 0}
-                              onClick={handlePlaceOrder}
-                            >
-                              Place Order
-                            </Button>
-                          </div>
-                        </div>
-                      </Grid>
+              {placeOrder ? (
+                <SelectAddress />
+              ) : (
+                <div>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4}>
+                      <div>
+                        <img
+                          src={productDetails.imageUrl}
+                          style={{ height: "100%", width: "100%" }}
+                        />
+                      </div>
                     </Grid>
-                  </div>
-                )}
-             {/* </Item> */}
+                    <Grid item xs={8}>
+                      <div>
+                        <div className="productdetails-name-price">
+                          <h1>{productDetails.name}</h1>
+                          <Button variant="contained">
+                            Available Quantity : {productDetails.availableItems}
+                          </Button>
+                        </div>
+                        <p>
+                          Category: <b>{productDetails.name}</b>
+                        </p>
+                        <p>{productDetails.description}</p>
+                        <p style={{ color: "red" }}>
+                          &#8377;{productDetails.price}
+                        </p>
+                        <TextField
+                          autoComplete="given-name"
+                          name="Quantity"
+                          required
+                          fullWidth
+                          id="Quantity"
+                          label="Enter Quantity"
+                          onChange={(e) => handleQuantity(e)}
+                          value={quantity}
+                          autoFocus
+                          style={{ width: "20%" }}
+                        />
+                        <div>
+                          <Button
+                            variant="contained"
+                            className="place-order"
+                            disabled={productDetails.availableItems === 0}
+                            onClick={handlePlaceOrder}
+                          >
+                            Place Order
+                          </Button>
+                        </div>
+                      </div>
+                    </Grid>
+                  </Grid>
+                </div>
+              )}
+              {/* </Item> */}
             </Grid>
           </Grid>
         </Box>

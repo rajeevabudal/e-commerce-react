@@ -49,25 +49,24 @@ export default function ProductForm({ product }) {
       setAvailableItems(0);
       setDescription("");
       setImageUrl("");
-      setValue({})
+      setValue({});
     } else {
-        axios
-      .get(`http://localhost:8080/api/products/${id}`)
-      .then((result) => {
-        console.log(result.data);
-        setName(result.data.name);
-        setManufacturer(result.data.manufacturer);
-        setPrice(result.data.price);
-        setAvailableItems(result.data.availableItems);
-        setDescription(result.data.description);
-        setImageUrl(result.data.imageUrl);
-        let value = createOption(result.data.category)
-        setValue(value);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-      
+      axios
+        .get(`http://localhost:8080/api/products/${id}`)
+        .then((result) => {
+          
+          setName(result.data.name);
+          setManufacturer(result.data.manufacturer);
+          setPrice(result.data.price);
+          setAvailableItems(result.data.availableItems);
+          setDescription(result.data.description);
+          setImageUrl(result.data.imageUrl);
+          let value = createOption(result.data.category);
+          setValue(value);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
     let categories = categoryList.map((cat) => {
       return createOption(cat);
@@ -77,7 +76,7 @@ export default function ProductForm({ product }) {
   }, [isEditProduct, isAddProduct]);
 
   const handleCreate = (inputValue) => {
-    console.log(inputValue);
+    
     let newOption;
     setState({ ...state, isLoading: true });
     setTimeout(() => {
@@ -89,7 +88,6 @@ export default function ProductForm({ product }) {
       setOptions(newOption);
       setValue(newOption);
     }, 1000);
-    
   };
 
   const handleSubmit = (event) => {
@@ -112,37 +110,50 @@ export default function ProductForm({ product }) {
       availableItems: Number(data.get("AvailableItems")),
       imageUrl: data.get("ImageURL"),
     };
-    !isEditProduct
-      ? axios
-          .post(
-            "http://localhost:8080/api/products",
-            productSubmitData,
-            axiosConfig
-          )
-          .then((res) => {
-            console.log(res);
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-      : axios
-          .put(
-            `http://localhost:8080/api/products/${id}`,
-            productSubmitData,
-            axiosConfig
-          )
-          .then((res) => {
-            console.log(res);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+
+    let isProductValid = true;
+
+    if (
+      productSubmitData.name === "" &&
+      productSubmitData.category === "" &&
+      productSubmitData.price === "" &&
+      productSubmitData.description === "" &&
+      productSubmitData.manufacturer === "" &&
+      productSubmitData.availableItems === "" &&
+      productSubmitData.imageUrl === ""
+    ){
+      isProductValid = false;
+    }
+    isProductValid && 
+      !isEditProduct
+        ? axios
+            .post(
+              "http://localhost:8080/api/products",
+              productSubmitData,
+              axiosConfig
+            )
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              console.log(err);
+            })
+        : axios
+            .put(
+              `http://localhost:8080/api/products/${id}`,
+              productSubmitData,
+              axiosConfig
+            )
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
     navigate("/products/list");
   };
 
   const handleChange = (formValue, event) => {
-    // setState({ ...state, [`${formValue}`]: event.target.value });
-    console.log(formValue, event.target.value);
     switch (formValue) {
       case "name":
         setName(event.target.value);
@@ -164,8 +175,6 @@ export default function ProductForm({ product }) {
         break;
     }
   };
-
-  console.log(value);
   return (
     <>
       <ThemeProvider theme={defaultTheme}>
@@ -207,9 +216,7 @@ export default function ProductForm({ product }) {
                     isClearable
                     isDisabled={isLoading}
                     isLoading={isLoading}
-                    onChange={(newValue) =>
-                      setValue(newValue)
-                    }
+                    onChange={(newValue) => setValue(newValue)}
                     onCreateOption={handleCreate}
                     options={options}
                     value={value}

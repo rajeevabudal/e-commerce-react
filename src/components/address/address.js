@@ -59,7 +59,6 @@ export default function SelectAddress() {
     axios
       .get("http://localhost:8080/api/addresses", axiosConfig)
       .then((response) => {
-        console.log(response.data);
 
         response.data.map((address) => {
           arrayAddress.push(
@@ -77,7 +76,6 @@ export default function SelectAddress() {
       });
   }, []);
 
-  console.log(options);
   const steps = useSelector((state) => state.product.steps);
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -119,6 +117,7 @@ export default function SelectAddress() {
       addressSubmitData.zipcode === ""
     ) {
       isAddressAvailableToSave = false;
+      setState({ ...state, isError: true, error: "All Fields Are Mandatory", open: true});
     }
     isAddressAvailableToSave &&
       axios
@@ -134,7 +133,6 @@ export default function SelectAddress() {
   };
 
   const handleBack = () => {
-    console.log(steps);
     navigate(-1);
     dispatch(getSteps(steps - 1));
   };
@@ -159,10 +157,10 @@ export default function SelectAddress() {
           dispatch(getAddress(response.data));
         })
         .catch((error) => {
-          console.log(error);
+          s(error);
         });
     } else {
-      setState({ ...state, isError: true, error: "Please select address" });
+      setState({ ...state, isError: true, error: "Please select address", open: true});
     }
   };
 

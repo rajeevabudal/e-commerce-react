@@ -14,7 +14,6 @@ export default function StepperComponent() {
   const [skipped, setSkipped] = React.useState(new Set());
 
   const stepsPlace = useSelector((state)=>state.product.steps)
-  console.log(stepsPlace);
   // const handleNext = () => {
 
   //   setActiveStep((prevActiveStep) => prevActiveStep + 1);

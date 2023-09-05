@@ -5,6 +5,8 @@ import Container from "@mui/material/Container";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import { Button } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import Grid from "@mui/material/Unstable_Grid2";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +17,9 @@ import { getAddress, getSteps } from "../../redux/productSlice";
 import "./confirmorder.css";
 
 export default function ConfirmOrder() {
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
     ...theme.typography.body2,
@@ -30,13 +35,19 @@ export default function ConfirmOrder() {
   const quantity = useSelector((state) => state.product.commerceQuantity);
   const orderedDetails = useSelector((state) => state.product.orderedDetails);
   const [userAddress, setUserAddress] = React.useState("");
+
+  const [state, setState] = React.useState({
+    vertical: "top",
+    horizontal: "right",
+    open: false,
+    error: "",
+    isError: false,
+  });
+
+  const { vertical, horizontal, error, open, isError } = state;
   const handlePlaceOrder = () => {
     dispatch(getSteps(steps + 1));
-    console.log(quantity);
     const user = localStorage.getItem("user");
-    console.log(user);
-    console.log(userAddress);
-    console.log(orderedDetails.name);
     const token = localStorage.getItem("token");
     let axiosConfig = {
       headers: {
@@ -55,8 +66,15 @@ export default function ConfirmOrder() {
     axios
       .post("http://localhost:8080/api/orders", orderSubmit, axiosConfig)
       .then((response) => {
-        console.log(response);
-        navigate("/products/list");
+        setState({
+          ...state,
+          isError: true,
+          error: "Order placed successfully",
+          open: true,
+        });
+        setTimeout(()=>{
+          navigate("/products/list")
+        }, 2000)
       })
       .catch((error) => {
         console.log(error);
@@ -86,7 +104,35 @@ export default function ConfirmOrder() {
     }
     setUserAddress(addressString);
   }, [address]);
-  console.log(userAddress);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setState({ ...state, open: false });
+  };
+  const displayMessage = () => {
+    return (
+      <>
+        <Snackbar
+          anchorOrigin={{ vertical, horizontal }}
+          open={open}
+          onClose={handleClose}
+          key={vertical + horizontal}
+          autoHideDuration={6000}
+        >
+          <Alert
+            onClose={handleClose}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            {error}
+          </Alert>
+        </Snackbar>
+      </>
+    );
+  };
   return (
     <>
       <Container maxWidth="lg" className="stepper-address">
@@ -121,7 +167,9 @@ export default function ConfirmOrder() {
                     <span>C{orderedDetails?.description}</span>
                   </div>
                   <div>
-                    <h1 style={{color:"red"}}>Total Price : {orderedDetails?.price * quantity}</h1>
+                    <h1 style={{ color: "red" }}>
+                      Total Price : {orderedDetails?.price * quantity}
+                    </h1>
                   </div>
                 </div>
                 <div className="divider-details">
@@ -150,6 +198,7 @@ export default function ConfirmOrder() {
           </div>
         </Box>
       </Container>
+      {isError && displayMessage()}
     </>
   );
 }

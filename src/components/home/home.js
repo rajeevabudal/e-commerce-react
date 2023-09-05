@@ -13,7 +13,6 @@ import SelectAddress from "../address/address";
 const Home = () => {
   let isLogin = useSelector((state)=>state.login.isLogin);
   let signInData = useSelector((state)=>state.login.signInData);
-  console.log(signInData);
   const navItems = isLogin && signInData.roles[0] === "ADMIN" ? ["Home", "Add Product", "LOGOUT"]:["Home", "LOGOUT"] ;
   const loginItems = ["Login", "SignUp"];
   return (
