@@ -157,7 +157,7 @@ export default function SelectAddress() {
           dispatch(getAddress(response.data));
         })
         .catch((error) => {
-          s(error);
+          console.log(error);
         });
     } else {
       setState({ ...state, isError: true, error: "Please select address", open: true});
